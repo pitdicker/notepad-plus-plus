@@ -82,6 +82,12 @@ void ToolBar::initTheme(TiXmlDocument *toolIconsDocRoot)
 
 			pathAppend(iconFolderDir, folderName);
 
+			const TCHAR* iconSizeStr = (_toolIcons->ToElement())->Attribute(TEXT("iconSize"));
+			if (iconSizeStr)
+				_iconSize = static_cast<int>(_ttoi64(iconSizeStr));
+			if (_iconSize < 0 || _iconSize > 128)
+				_iconSize = 0;
+
 			size_t i = 0;
 			generic_string disabled_suffix = L"_disabled";
 			generic_string ext = L".ico";
@@ -123,12 +129,15 @@ void ToolBar::initTheme(TiXmlDocument *toolIconsDocRoot)
 bool ToolBar::init( HINSTANCE hInst, HWND hPere, toolBarStatusType type, ToolBarButtonUnit *buttonUnitArray, int arraySize)
 {
 	Window::init(hInst, hPere);
-	
+
 	_state = type;
-	int iconSize = NppParameters::getInstance()._dpiManager.scaleX(_state == TB_LARGE || _state == TB_LARGE2 ? 32 : 16);
+	int IconSize = _iconSize;
+	if (IconSize == 0)
+		IconSize = _state == TB_LARGE || _state == TB_LARGE2 ? 32 : 16;
+	int iconSizeScaled = NppParameters::getInstance()._dpiManager.scaleX(IconSize);
 
 	_toolBarIcons.init(buttonUnitArray, arraySize, _vDynBtnReg);
-	_toolBarIcons.create(_hInst, iconSize);
+	_toolBarIcons.create(_hInst, iconSizeScaled);
 	
 	INITCOMMONCONTROLSEX icex{};
 	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);

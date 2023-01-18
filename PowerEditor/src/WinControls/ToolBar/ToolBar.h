@@ -106,6 +106,7 @@ private :
 	ToolBarIcons _toolBarIcons;
 	toolBarStatusType _state = TB_SMALL;
 	std::vector<DynamicCmdIcoBmp> _vDynBtnReg;
+	int _iconSize = 0;
 	size_t _nbButtons = 0;
 	size_t _nbDynButtons = 0;
 	size_t _nbTotalButtons = 0;
